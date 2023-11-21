@@ -1,18 +1,29 @@
 # EntreeSortie
 
-Pour tester ouvrir, fermer et vider:  
--créer un fichier Lecture.txt et Ecriture.txt, pouvant être ouvert en lecture et ecriture;  
+Pour tester lire:  
 -compiler stdes.c  
 &emsp;&emsp;gcc stdes.c;  
 -Lancer l'executable  
-&emsp;&emsp;./a.out Lecture.txt Ecriture.txt Creer.txt;  
+&emsp;&emsp;./a.out Lecture.txt Ecriture.txt;  
 -La sortie attendu est :  
-&emsp;&emsp;Ouverture d'un fichier en lecture réussi.  
-&emsp;&emsp;Ouverture d'un fichier existant en écriture réussi.  
-&emsp;&emsp;Ouverture d'un fichier créer en écriture réussi.  
-&emsp;&emsp;Ok  
-&emsp;&emsp;OK  
-&emsp;&emsp;Fermeture d'un fichier en lecture réussi.  
-&emsp;&emsp;Fermeture d'un fichier existant en écriture réussi.  
-&emsp;&emsp;Fermeture d'un fichier créer en écriture réussi.  
-De plus un fichier Creer.txt devrait apparaitre dans le dossier courant.  
+Lecture d'un fichier ouvert en ecriture refusé.  
+&emsp;&emsp;Cas buffer vide et size_wanted < f->size  
+&emsp;&emsp;&emsp;&emsp;    Taille lus : 3  
+&emsp;&emsp;&emsp;&emsp;    Octets lus : Lec  
+&emsp;&emsp;Cas buffer vide et size_wanted > f->size  
+&emsp;&emsp;&emsp;&emsp;    Taille lus : 7  
+&emsp;&emsp;&emsp;&emsp;    Octets lus : Lecture  
+&emsp;&emsp;Cas buffer non vide et size_wanted < f->size  
+&emsp;&emsp;&emsp;&emsp;    Taille lus : 1  
+&emsp;&emsp;&emsp;&emsp;    Octets lus : L  
+&emsp;&emsp;&emsp;&emsp;    Taille lus : 1  
+&emsp;&emsp;&emsp;&emsp;    Octets lus : e  
+&emsp;&emsp;Cas buffer non vide et size_wanted > f->size  
+&emsp;&emsp;&emsp;&emsp;    Taille lus : 1  
+&emsp;&emsp;&emsp;&emsp;    Octets lus : L  
+&emsp;&emsp;&emsp;&emsp;   Taille lus : 6  
+&emsp;&emsp;&emsp;&emsp;    Octets lus : ecture  
+&emsp;&emsp;Cas buffer non vide et size_wanted > f->size  
+&emsp;&emsp;&emsp;&emsp;    Taille lus : 0  
+&emsp;&emsp;&emsp;&emsp;    Octets lus :  
+  
