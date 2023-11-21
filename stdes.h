@@ -22,8 +22,8 @@ extern FICHIER *stderr_io;
 /* mode: 'L' = lecture, 'E' = écriture */
 FICHIER *ouvrir(const char *nom, char mode);
 int fermer(FICHIER*f);
-int lire(void *p, unsigned int taille, unsigned int nbelem, FICHIER *f);
-int ecrire(const void *p, unsigned int taille, unsigned int nbelem, FICHIER *f);
+ssize_t lire(void *p, unsigned int taille, unsigned int nbelem, FICHIER *f);
+ssize_t ecrire(const void *p, unsigned int taille, unsigned int nbelem, FICHIER *f);
 int vider(FICHIER *f);
 
 int fecriref (FICHIER *f, const char *format, ...);
@@ -33,3 +33,4 @@ int fliref (FICHIER *f, const char *format, ...);
 
 
 #endif
+
