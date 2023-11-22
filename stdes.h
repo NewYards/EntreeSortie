@@ -5,6 +5,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h> 
+#include <stdarg.h>
+
+#include <limits.h>
 
 typedef struct _ES_FICHIER
 {
@@ -33,4 +36,3 @@ int fliref (FICHIER *f, const char *format, ...);
 
 
 #endif
-
