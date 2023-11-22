@@ -5,7 +5,5 @@ Pour tester lire:
 &emsp;&emsp;gcc stdes.c;  
 -Lancer l'executable  
 &emsp;&emsp;./a.out Lecture.txt Ecriture.txt;  
--La sortie se lit dans le fichier Ecriture.txt qui doit ressembler a :
- a bonjour  
- -1257  
-f  
+-La sortie doit être :  
+Test
