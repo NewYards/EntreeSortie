@@ -6,18 +6,6 @@
 FICHIER *stdout_io = NULL;
 FICHIER *stderr_io = NULL;
 
-// Fonction pour tester les fonctions
-int main(int argc, char *argv[])
-{
-    // Verification du nombre d'entrée fournis
-	if (argc != 3) exit(-1);
-
-    // Test ecriref
-    ecriref("%s\n", "Test");
-
-	return 0;
-}
-
 FICHIER *ouvrir(const char *nom, char mode)
 {
     // On met fd a -1 pour le cas ou mode est différent de E et L
@@ -374,7 +362,7 @@ int fecriref (FICHIER *f, const char *format, ...)
     return ecrire(result, 1, size_res, f);
 }
 
-int init()
+void init()
 {
     // On alloue et on intialise les variable
     stdout_io = malloc(sizeof(FICHIER));
