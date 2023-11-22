@@ -19,9 +19,6 @@ typedef struct _ES_FICHIER
     char * load_data;
 } FICHIER;
 
-extern FICHIER *stdout_io;
-extern FICHIER *stderr_io;
-
 /* mode: 'L' = lecture, 'E' = écriture */
 FICHIER *ouvrir(const char *nom, char mode);
 int fermer(FICHIER*f);
