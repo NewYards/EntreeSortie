@@ -3,19 +3,17 @@
 #define BUFFER_SIZE 10
 #include <stdio.h>
 
+FICHIER *stdout_io = NULL;
+FICHIER *stderr_io = NULL;
+
 // Fonction pour tester les fonctions
 int main(int argc, char *argv[])
 {
-	FICHIER *f1;
-
     // Verification du nombre d'entrée fournis
 	if (argc != 3) exit(-1);
 
-    // Test ecrire un fichier en lecture
-    if ((f1 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
-    fecriref(f1, " %c %s \n", 'a', "bonjour");
-    fecriref(f1, " %d \nf\n", -1257);
-    if(fermer (f1)==-1)exit(-1);
+    // Test ecriref
+    ecriref("%s\n", "Test");
 
 	return 0;
 }
@@ -374,4 +372,165 @@ int fecriref (FICHIER *f, const char *format, ...)
     va_end(args);
     // Enfin on ecrit avec la fonction result dans f1, c'est la fonction ecrire qui choisit si on stocke result dans le buffer ou pas.
     return ecrire(result, 1, size_res, f);
+}
+
+int init()
+{
+    // On alloue et on intialise les variable
+    stdout_io = malloc(sizeof(FICHIER));
+
+    stdout_io->size = BUFFER_SIZE;
+    stdout_io->buffer = malloc(stdout_io->size);
+    stdout_io->cursor = stdout_io->buffer;
+    stdout_io->mode = 'E';
+    stdout_io->load_data = stdout_io->buffer;
+    stdout_io->fd = 1;
+
+    stderr_io = malloc(sizeof(FICHIER));
+    stderr_io->size = BUFFER_SIZE;
+    stderr_io->buffer = malloc(stderr_io->size);
+    stderr_io->cursor = stderr_io->buffer;
+    stderr_io->mode = 'E';
+    stderr_io->load_data = stderr_io->buffer;
+    stderr_io->fd = 2;
+
+}
+
+int ecriref (const char *format, ...)
+{
+    init();
+
+    // On commence par calculer la taille en caratere du plus grand int
+    int int_max = INT_MAX;
+    int max_size_int = 0;
+    while(int_max >= 10)
+    {
+        int_max = int_max/10;
+        max_size_int ++;
+    }
+    // Pour le signe - dans le cas ou le nombre est negatif
+    max_size_int++;
+    // On initialise un va_list
+    va_list args;
+    va_start(args, format);
+    // size_res est la taille en octets (char) de notre chaine resultante du format
+    int size_res = 0;
+    // On recupere la taille de format
+    int size_format = strlen(format);
+
+    // args_int va contenir tous les argument de type int du format dans l'ordre
+    int* args_int = malloc(sizeof(int) * (size_format/2));
+    // args_int_compteur permet de se souvenir ou on se trouve dans args_int
+    int args_int_compteur = 0;
+    // args_char va contenir tous les argument de type char du format dans l'ordre
+    char* args_char = malloc(sizeof(char) * (size_format/2));
+    // args_char_compteur permet de se souvenir ou on se trouve dans args_char
+    int args_char_compteur = 0;
+    // args_char_ptr va contenir tous les argument de type char* du format dans l'ordre
+    char** args_char_ptr = malloc(sizeof(char*) * (size_format/2));
+    // args_char_ptr_compteur permet de se souvenir ou on se trouve dans args_char_ptr
+    int args_char_ptr_compteur = 0;
+
+    // On recupere ttous les arguments et on calcul la somme de la taille de tous les argument plus les caractere fixe de format
+    for(int i = 0; i < size_format; i++)
+    {
+        if(format[i] == '%')
+        {
+            if(format[i+1] == 'd')
+            {
+                args_int[args_int_compteur] = va_arg(args, int);
+                int tmp = args_int[args_int_compteur];
+                int size_int = 0;
+                //On calcul la taille en caractere de l'argument de type int
+                if(tmp<0)
+                { 
+                    size_int ++; 
+                    tmp = tmp*-1;
+                }
+                while(tmp >= 10)
+                {
+                    tmp = tmp/10;
+                    size_int ++;
+                }
+                size_res = size_res + size_int;
+                args_int_compteur ++;
+            }
+            else if(format[i+1] == 'c')
+            {
+                args_char[args_char_compteur] = va_arg(args, int);
+                args_char_compteur++;
+            }
+            else if(format[i+1] == 's')
+            {
+                args_char_ptr[args_char_ptr_compteur] = va_arg(args, char*);
+                size_res = size_res + strlen(args_char_ptr[args_char_ptr_compteur])-1;
+                args_char_ptr_compteur++;
+            }
+        }
+        size_res ++;
+    }
+    // Avec la taille on initialise le resultat
+    char * result = malloc(size_res+1);
+    // on reset les compteur
+    args_int_compteur = 0;
+    args_char_compteur = 0;
+    args_char_ptr_compteur = 0;
+    // j permet de garder notre position dans result
+    int j = 0;
+    // On ecrit dans result tous les caractere et arguments de format dans result
+    for(int i = 0; i <= size_format; i++)
+    {
+        if(format[i] == '%')
+        {
+            if(format[i+1] == 'd')
+            {
+                char * int_to_char = malloc(max_size_int);
+                sprintf(int_to_char, "%d", args_int[args_int_compteur]);
+                args_int_compteur++;
+                int k = 0;
+                while(int_to_char[k] != '\0')
+                {
+                    result[j] = int_to_char[k];
+                    j++;
+                    k++;
+                }
+                i++;
+            }
+            else if(format[i+1] == 'c')
+            {
+                result[j] = args_char[args_char_compteur];
+                args_char_compteur++;
+                j++;
+                i++;
+            }
+            else if(format[i+1] == 's')
+            {
+                int k = 0;
+                while(args_char_ptr[args_char_ptr_compteur][k] != '\0')
+                {
+                    result[j] = args_char_ptr[args_char_ptr_compteur][k];
+                    j++;
+                    k++;
+                }
+                args_char_ptr_compteur++;
+                i++;
+            }
+            else
+            {
+                result[j] = format[i];
+                j++;
+            }
+        }
+        else
+        {
+            result[j] = format[i];
+            j++;
+        }
+    }
+    // On ferme la va_list
+    va_end(args);
+    // Enfin on ecrit avec la fonction result dans f1, c'est la fonction ecrire qui choisit si on stocke result dans le buffer ou pas.
+    int return_value = ecrire(result, 1, size_res, stdout_io);
+    vider(stdout_io);
+    return return_value;
 }
