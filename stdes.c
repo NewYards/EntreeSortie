@@ -3,125 +3,19 @@
 #define BUFFER_SIZE 10
 #include <stdio.h>
 
-void printBufferEcrire(char *cursor, char *dataload) {
-    // Impression des caractères entre cursor et dataload
-    while (cursor < dataload) {
-        printf("%c", *cursor);
-        cursor++;
-    }
-
-    // Ajout d'un saut de ligne à la fin
-    printf("\n");
-}
-
 // Fonction pour tester les fonctions
 int main(int argc, char *argv[])
 {
 	FICHIER *f1;
-	FICHIER *f2;
-    char c = 'A';
-	char *c1 = "Test";
-    char *c2 = "TestTestTe";
-    char *c3 = "TestTestTest";
 
     // Verification du nombre d'entrée fournis
 	if (argc != 3) exit(-1);
 
     // Test ecrire un fichier en lecture
-    if ((f1 = ouvrir (argv[1], 'L')) == NULL) exit (-1);
-    if(ecrire(c1, 1, 4, f1) == -1) printf("Lecture d'un fichier ouvert en ecriture refusé.\n");
-    else exit(-1);
+    if ((f1 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
+    fecriref(f1, " %c %s \n", 'a', "bonjour");
+    fecriref(f1, " %d \nf\n", -1257);
     if(fermer (f1)==-1)exit(-1);
-
-
-    ssize_t size_write;
-    // Test de la fonction de lecture
-    // Cas 1 char
-    printf("Cas 1 char\n");
-    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
-    size_write = ecrire(&c, 1, 1, f2);
-    printf("    Taille lus : %d\n", size_write);
-    printf("    Buffer : ");
-    printBufferEcrire(f2->cursor, f2->load_data);
-    if(fermer (f2)==-1)exit(-1);
-
-    // Cas buffer vide et size_wanted < f->size
-    printf("Cas buffer vide et size_wanted < f->size\n");
-    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
-    size_write = ecrire(c1, 1, 4, f2);
-    printf("    Taille lus : %d\n", size_write);
-    printf("    Buffer : ");
-    printBufferEcrire(f2->cursor, f2->load_data);
-    if(fermer (f2)==-1)exit(-1);
-
-    // Cas buffer vide et size_wanted = f->size
-    printf("Cas buffer vide et size_wanted = f->size\n");
-    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
-    size_write = ecrire(c2, 1, 10, f2);
-    printf("    Taille lus : %d\n", size_write);
-    printf("    Buffer : ");
-    printBufferEcrire(f2->cursor, f2->load_data);
-    if(fermer (f2)==-1)exit(-1);
-
-    // Cas buffer vide et size_wanted > f->size
-    printf("Cas buffer vide et size_wanted = f->size\n");
-    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
-    size_write = ecrire(c3, 1, 12, f2);
-    printf("    Taille lus : %d\n", size_write);
-    printf("    Buffer : ");
-    printBufferEcrire(f2->cursor, f2->load_data);
-    if(fermer (f2)==-1)exit(-1);
-    printf("-----------------------------------------------------------\n");
-    // Cas buffer non vide et size_wanted < f->size
-    printf("Cas buffer non vide et size_wanted < f->size\n");
-    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
-    size_write = ecrire(c1, 1, 4, f2);
-    printf("    Taille lus : %d\n", size_write);
-    printf("    Buffer : ");
-    printBufferEcrire(f2->cursor, f2->load_data);
-    size_write = ecrire(c1, 1, 4, f2);
-    printf("    Taille lus : %d\n", size_write);
-    printf("    Buffer : ");
-    printBufferEcrire(f2->cursor, f2->load_data);
-    size_write = ecrire(c1, 1, 4, f2);
-    printf("    Taille lus : %d\n", size_write);
-    printf("    Buffer : ");
-    printBufferEcrire(f2->cursor, f2->load_data);
-    if(fermer (f2)==-1)exit(-1);
-
-    // Cas buffer non vide et size_wanted = f->size
-    printf("Cas buffer non vide et size_wanted = f->size\n");
-    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
-    size_write = ecrire(c1, 1, 4, f2);
-    printf("    Taille lus : %d\n", size_write);
-    printf("    Buffer : ");
-    printBufferEcrire(f2->cursor, f2->load_data);
-    size_write = ecrire(c1, 1, 4, f2);
-    printf("    Taille lus : %d\n", size_write);
-    printf("    Buffer : ");
-    printBufferEcrire(f2->cursor, f2->load_data);
-    size_write = ecrire(c2, 1, 10, f2);
-    printf("    Taille lus : %d\n", size_write);
-    printf("    Buffer : ");
-    printBufferEcrire(f2->cursor, f2->load_data);
-    if(fermer (f2)==-1)exit(-1);
-
-    // Cas buffer non vide et size_wanted > f->size
-    printf("Cas buffer non vide et size_wanted > f->size\n");
-    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
-    size_write = ecrire(c1, 1, 4, f2);
-    printf("    Taille lus : %d\n", size_write);
-    printf("    Buffer : ");
-    printBufferEcrire(f2->cursor, f2->load_data);
-    size_write = ecrire(c1, 1, 4, f2);
-    printf("    Taille lus : %d\n", size_write);
-    printf("    Buffer : ");
-    printBufferEcrire(f2->cursor, f2->load_data);
-    size_write = ecrire(c3, 1, 12, f2);
-    printf("    Taille lus : %d\n", size_write);
-    printf("    Buffer : ");
-    printBufferEcrire(f2->cursor, f2->load_data);
-    if(fermer (f2)==-1)exit(-1);
 
 	return 0;
 }
@@ -340,7 +234,144 @@ ssize_t ecrire(const void *p, unsigned int taille, unsigned int nbelem, FICHIER 
         }
         // Enfin on ecrit tmp_buffer dans le fichier
         write(f->fd, tmp_buffer, size_loaded + size_wanted);
-	free(tmp_buffer);
+        free(tmp_buffer);
     }
     return elem_write;
+}
+
+int fecriref (FICHIER *f, const char *format, ...)
+{
+    if(f->mode != 'E') return -1;
+
+    // On commence par calculer la taille en caratere du plus grand int
+    int int_max = INT_MAX;
+    int max_size_int = 0;
+    while(int_max >= 10)
+    {
+        int_max = int_max/10;
+        max_size_int ++;
+    }
+    // Pour le signe - dans le cas ou le nombre est negatif
+    max_size_int++;
+    // On initialise un va_list
+    va_list args;
+    va_start(args, format);
+    // size_res est la taille en octets (char) de notre chaine resultante du format
+    int size_res = 0;
+    // On recupere la taille de format
+    int size_format = strlen(format);
+
+    // args_int va contenir tous les argument de type int du format dans l'ordre
+    int* args_int = malloc(sizeof(int) * (size_format/2));
+    // args_int_compteur permet de se souvenir ou on se trouve dans args_int
+    int args_int_compteur = 0;
+    // args_char va contenir tous les argument de type char du format dans l'ordre
+    char* args_char = malloc(sizeof(char) * (size_format/2));
+    // args_char_compteur permet de se souvenir ou on se trouve dans args_char
+    int args_char_compteur = 0;
+    // args_char_ptr va contenir tous les argument de type char* du format dans l'ordre
+    char** args_char_ptr = malloc(sizeof(char*) * (size_format/2));
+    // args_char_ptr_compteur permet de se souvenir ou on se trouve dans args_char_ptr
+    int args_char_ptr_compteur = 0;
+
+    // On recupere ttous les arguments et on calcul la somme de la taille de tous les argument plus les caractere fixe de format
+    for(int i = 0; i < size_format; i++)
+    {
+        if(format[i] == '%')
+        {
+            if(format[i+1] == 'd')
+            {
+                args_int[args_int_compteur] = va_arg(args, int);
+                int tmp = args_int[args_int_compteur];
+                int size_int = 0;
+                //On calcul la taille en caractere de l'argument de type int
+                if(tmp<0)
+                { 
+                    size_int ++; 
+                    tmp = tmp*-1;
+                }
+                while(tmp >= 10)
+                {
+                    tmp = tmp/10;
+                    size_int ++;
+                }
+                size_res = size_res + size_int;
+                args_int_compteur ++;
+            }
+            else if(format[i+1] == 'c')
+            {
+                args_char[args_char_compteur] = va_arg(args, int);
+                args_char_compteur++;
+            }
+            else if(format[i+1] == 's')
+            {
+                args_char_ptr[args_char_ptr_compteur] = va_arg(args, char*);
+                size_res = size_res + strlen(args_char_ptr[args_char_ptr_compteur])-1;
+                args_char_ptr_compteur++;
+            }
+        }
+        size_res ++;
+    }
+    // Avec la taille on initialise le resultat
+    char * result = malloc(size_res+1);
+    // on reset les compteur
+    args_int_compteur = 0;
+    args_char_compteur = 0;
+    args_char_ptr_compteur = 0;
+    // j permet de garder notre position dans result
+    int j = 0;
+    // On ecrit dans result tous les caractere et arguments de format dans result
+    for(int i = 0; i <= size_format; i++)
+    {
+        if(format[i] == '%')
+        {
+            if(format[i+1] == 'd')
+            {
+                char * int_to_char = malloc(max_size_int);
+                sprintf(int_to_char, "%d", args_int[args_int_compteur]);
+                args_int_compteur++;
+                int k = 0;
+                while(int_to_char[k] != '\0')
+                {
+                    result[j] = int_to_char[k];
+                    j++;
+                    k++;
+                }
+                i++;
+            }
+            else if(format[i+1] == 'c')
+            {
+                result[j] = args_char[args_char_compteur];
+                args_char_compteur++;
+                j++;
+                i++;
+            }
+            else if(format[i+1] == 's')
+            {
+                int k = 0;
+                while(args_char_ptr[args_char_ptr_compteur][k] != '\0')
+                {
+                    result[j] = args_char_ptr[args_char_ptr_compteur][k];
+                    j++;
+                    k++;
+                }
+                args_char_ptr_compteur++;
+                i++;
+            }
+            else
+            {
+                result[j] = format[i];
+                j++;
+            }
+        }
+        else
+        {
+            result[j] = format[i];
+            j++;
+        }
+    }
+    // On ferme la va_list
+    va_end(args);
+    // Enfin on ecrit avec la fonction result dans f1, c'est la fonction ecrire qui choisit si on stocke result dans le buffer ou pas.
+    return ecrire(result, 1, size_res, f);
 }
