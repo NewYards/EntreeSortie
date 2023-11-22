@@ -340,6 +340,7 @@ ssize_t ecrire(const void *p, unsigned int taille, unsigned int nbelem, FICHIER 
         }
         // Enfin on ecrit tmp_buffer dans le fichier
         write(f->fd, tmp_buffer, size_loaded + size_wanted);
+	free(tmp_buffer);
     }
     return elem_write;
 }
