@@ -1,77 +1,127 @@
 #include "stdes.h"
 
-#define BUFFER_SIZE 10000000
+#define BUFFER_SIZE 10
 #include <stdio.h>
+
+void printBufferEcrire(char *cursor, char *dataload) {
+    // Impression des caractères entre cursor et dataload
+    while (cursor < dataload) {
+        printf("%c", *cursor);
+        cursor++;
+    }
+
+    // Ajout d'un saut de ligne à la fin
+    printf("\n");
+}
 
 // Fonction pour tester les fonctions
 int main(int argc, char *argv[])
 {
 	FICHIER *f1;
 	FICHIER *f2;
-	char *c1 = malloc(sizeof(char) * 7);
-    char *c2 = malloc(sizeof(char) * 7);
-    char *c3 = malloc(sizeof(char) * 7);
-    char *c4 = malloc(sizeof(char) * 7);
-    char *c5 = malloc(sizeof(char) * 7);
-    char *c6 = malloc(sizeof(char) * 7);
+    char c = 'A';
+	char *c1 = "Test";
+    char *c2 = "TestTestTe";
+    char *c3 = "TestTestTest";
 
     // Verification du nombre d'entrée fournis
 	if (argc != 3) exit(-1);
 
-    // Test lire un fichier en ecriture
-    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
-    if(lire(&c5, 1, 1, f2) == -1) printf("Lecture d'un fichier ouvert en ecriture refusé.\n");
+    // Test ecrire un fichier en lecture
+    if ((f1 = ouvrir (argv[1], 'L')) == NULL) exit (-1);
+    if(ecrire(c1, 1, 4, f1) == -1) printf("Lecture d'un fichier ouvert en ecriture refusé.\n");
     else exit(-1);
+    if(fermer (f1)==-1)exit(-1);
+
+
+    ssize_t size_write;
+    // Test de la fonction de lecture
+    // Cas 1 char
+    printf("Cas 1 char\n");
+    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
+    size_write = ecrire(&c, 1, 1, f2);
+    printf("    Taille lus : %d\n", size_write);
+    printf("    Buffer : ");
+    printBufferEcrire(f2->cursor, f2->load_data);
     if(fermer (f2)==-1)exit(-1);
 
-
-    ssize_t size_read;
-    // Test de la fonction de lecture
     // Cas buffer vide et size_wanted < f->size
     printf("Cas buffer vide et size_wanted < f->size\n");
-    if ((f1 = ouvrir (argv[1], 'L')) == NULL) exit (-1);
-    size_read = lire(c1, 1, 3, f1);
-    printf("    Taille lus : %d\n", size_read);
-    printf("    Octets lus : %s\n", c1);
-    if(fermer (f1)==-1)exit(-1);
+    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
+    size_write = ecrire(c1, 1, 4, f2);
+    printf("    Taille lus : %d\n", size_write);
+    printf("    Buffer : ");
+    printBufferEcrire(f2->cursor, f2->load_data);
+    if(fermer (f2)==-1)exit(-1);
 
-    // Cas buffer vide et size_wanted > f->size (On dit f->size car dans notre implementations c'est egale a size_remainig qui ici est egale a ce qu'on a lus, amélioration possible)
-    printf("Cas buffer vide et size_wanted > f->size\n");
-    if ((f1 = ouvrir (argv[1], 'L')) == NULL) exit (-1);
-    size_read = lire(c2, 1, 10, f1);
-    printf("    Taille lus : %d\n", size_read);
-    printf("    Octets lus : %s\n", c2);
-    if(fermer (f1)==-1)exit(-1);
+    // Cas buffer vide et size_wanted = f->size
+    printf("Cas buffer vide et size_wanted = f->size\n");
+    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
+    size_write = ecrire(c2, 1, 10, f2);
+    printf("    Taille lus : %d\n", size_write);
+    printf("    Buffer : ");
+    printBufferEcrire(f2->cursor, f2->load_data);
+    if(fermer (f2)==-1)exit(-1);
 
+    // Cas buffer vide et size_wanted > f->size
+    printf("Cas buffer vide et size_wanted = f->size\n");
+    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
+    size_write = ecrire(c3, 1, 12, f2);
+    printf("    Taille lus : %d\n", size_write);
+    printf("    Buffer : ");
+    printBufferEcrire(f2->cursor, f2->load_data);
+    if(fermer (f2)==-1)exit(-1);
+    printf("-----------------------------------------------------------\n");
     // Cas buffer non vide et size_wanted < f->size
     printf("Cas buffer non vide et size_wanted < f->size\n");
-    if ((f1 = ouvrir (argv[1], 'L')) == NULL) exit (-1);
-    size_read = lire(c3, 1, 1, f1);
-    printf("    Taille lus : %d\n", size_read);
-    printf("    Octets lus : %s\n", c3);
-    size_read = lire(c3, 1, 1, f1);
-    printf("    Taille lus : %d\n", size_read);
-    printf("    Octets lus : %s\n", c3);
-    if(fermer (f1)==-1)exit(-1);
+    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
+    size_write = ecrire(c1, 1, 4, f2);
+    printf("    Taille lus : %d\n", size_write);
+    printf("    Buffer : ");
+    printBufferEcrire(f2->cursor, f2->load_data);
+    size_write = ecrire(c1, 1, 4, f2);
+    printf("    Taille lus : %d\n", size_write);
+    printf("    Buffer : ");
+    printBufferEcrire(f2->cursor, f2->load_data);
+    size_write = ecrire(c1, 1, 4, f2);
+    printf("    Taille lus : %d\n", size_write);
+    printf("    Buffer : ");
+    printBufferEcrire(f2->cursor, f2->load_data);
+    if(fermer (f2)==-1)exit(-1);
+
+    // Cas buffer non vide et size_wanted = f->size
+    printf("Cas buffer non vide et size_wanted = f->size\n");
+    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
+    size_write = ecrire(c1, 1, 4, f2);
+    printf("    Taille lus : %d\n", size_write);
+    printf("    Buffer : ");
+    printBufferEcrire(f2->cursor, f2->load_data);
+    size_write = ecrire(c1, 1, 4, f2);
+    printf("    Taille lus : %d\n", size_write);
+    printf("    Buffer : ");
+    printBufferEcrire(f2->cursor, f2->load_data);
+    size_write = ecrire(c2, 1, 10, f2);
+    printf("    Taille lus : %d\n", size_write);
+    printf("    Buffer : ");
+    printBufferEcrire(f2->cursor, f2->load_data);
+    if(fermer (f2)==-1)exit(-1);
 
     // Cas buffer non vide et size_wanted > f->size
     printf("Cas buffer non vide et size_wanted > f->size\n");
-    if ((f1 = ouvrir (argv[1], 'L')) == NULL) exit (-1);
-    size_read = lire(c4, 1, 1, f1);
-    printf("    Taille lus : %d\n", size_read);
-    printf("    Octets lus : %s\n", c4);
-    size_read = lire(c4, 1, 10, f1);
-    printf("    Taille lus : %d\n", size_read);
-    printf("    Octets lus : %s\n", c4);
-    if(fermer (f1)==-1)exit(-1);
-
-    // Cas lire un element superieur a la taille du fichier
-    printf("Cas buffer non vide et size_wanted > f->size\n");
-    if ((f1 = ouvrir (argv[1], 'L')) == NULL) exit (-1);
-    size_read = lire(c6, 10, 1, f1);
-    printf("    Taille lus : %d\n", size_read);
-    printf("    Octets lus : %s\n", c6);
-    if(fermer (f1)==-1)exit(-1);
+    if ((f2 = ouvrir (argv[2], 'E')) == NULL) exit (-1);
+    size_write = ecrire(c1, 1, 4, f2);
+    printf("    Taille lus : %d\n", size_write);
+    printf("    Buffer : ");
+    printBufferEcrire(f2->cursor, f2->load_data);
+    size_write = ecrire(c1, 1, 4, f2);
+    printf("    Taille lus : %d\n", size_write);
+    printf("    Buffer : ");
+    printBufferEcrire(f2->cursor, f2->load_data);
+    size_write = ecrire(c3, 1, 12, f2);
+    printf("    Taille lus : %d\n", size_write);
+    printf("    Buffer : ");
+    printBufferEcrire(f2->cursor, f2->load_data);
+    if(fermer (f2)==-1)exit(-1);
 
 	return 0;
 }
@@ -103,7 +153,7 @@ int vider(FICHIER *f)
     // Si le fichier est ouvert en ecriture on vide le buffer dans le fichier
     if(f->mode == 'E' && size_remaining > 0) write(f->fd, f->cursor, size_remaining);
 
-    // Si le fichier est ouvert en lecture on vide le buffer des 
+    // Si le fichier est ouvert en lecture on vide le buffer des données deja lus
     if(f->mode == 'L' && size_remaining > 0) memcpy(f->buffer, f->cursor, size_remaining);
         
     // On reset la position du curseur et des données lus
@@ -203,7 +253,7 @@ ssize_t lire(void *p, unsigned int taille, unsigned int nbelem, FICHIER *f)
         // On creer un nouveau compteur pour les elements lu dans le nouveau buffer
         ssize_t elem_read_in_file = 0;
         // On lis les elements restant
-        while(elem_read + elem_read_in_file < nbelem && size_loaded >= taille) // = ou pas ?
+        while(elem_read + elem_read_in_file < nbelem && size_loaded >= taille) 
         {
             memcpy(p+((elem_read_in_file+elem_read)*taille), tmp_buffer+(elem_read_in_file*taille), taille);
             elem_read_in_file = elem_read_in_file + 1;
@@ -218,4 +268,78 @@ ssize_t lire(void *p, unsigned int taille, unsigned int nbelem, FICHIER *f)
         free(tmp_buffer);
     }
     return elem_read;
+}
+
+ssize_t ecrire(const void *p, unsigned int taille, unsigned int nbelem, FICHIER *f)
+{
+    // Si le fichier est ouvert en lecture ou que la source est NULL on retourne -1
+    if(f->mode != 'E' && p != NULL) return -1;
+
+    // Initialisation
+    // size wanted est la taille maximum que l'on va ecrire
+    int size_wanted = (taille*nbelem);
+    // elem_write est le compteur d'element que l'on a ecrit
+    ssize_t elem_write = 0;
+    // size remaining est la taille vide du buffer
+    int size_remaining = (f->buffer + f->size) - f->load_data;
+    // size_of_p est la taille du tableau p
+    int size_of_p = 0;
+    // tmp_ptr est un pointeur temporaire pour trouver la taille de p
+    char * tmp_ptr = (char *)p;
+    while(*tmp_ptr != '\0') 
+    {
+        size_of_p = size_of_p + 1;
+        tmp_ptr = (tmp_ptr + 1);
+    }
+    // Si p est plus petit que la taille demandé on calcul le nombre maximum d'element dans p
+    while(size_of_p < size_wanted) 
+    {
+        nbelem = nbelem - 1;
+        size_wanted = (taille*nbelem);
+    }
+
+    // Si le buffer est remplit et que ce que l'on veut ecrire est inferieur a la taille du buffer on vide le buffer
+    if(size_remaining <= size_wanted && size_wanted <= f->size)
+    {
+        // size loaded est le nombre d'octets que write a ecrit
+        int size_loaded = write(f->fd, f->cursor, f->size - size_remaining);
+        if (size_loaded < 0) return -1;
+        // On reset load_data
+        f->load_data = f->buffer;
+        // On reset le curseur au debut du buffer
+        f->cursor = f->buffer;
+        // On recalcul size_remaining, sachant qu'il ne peut plus etre egale a 0.
+        size_remaining = (f->buffer + f->size) - f->load_data;
+    }
+    if(size_wanted < f->size) 
+    {
+        // On copie les elements de p dans le buffer
+        for(int i = 0; i < nbelem; i++) 
+        { 
+            memcpy(f->load_data, p+(i*taille), taille);
+            elem_write = elem_write + 1;
+            f->load_data = f->load_data + taille;
+        }
+    }
+    else if(size_wanted >= f->size) 
+    {
+        // size loaded est la taille qui n'a pas encore etais ecrite dans le fichier
+        int size_loaded = f->load_data - f->cursor;
+        // tmp_buffer est un buffer qui va contenir les element du buffer du fichier suivit des elements nouveaux demandée a ecrire sur le fichier
+        void * tmp_buffer = malloc(size_wanted + size_loaded);
+        // On ecrit au debut de tmp_buffer f->cursor jusqua f->load_data
+        memcpy(tmp_buffer, f->cursor, size_loaded);
+        // On reset le curseur et load_data
+        f->cursor = f->buffer;
+        f->load_data = f->buffer;
+        // On ecrit les nouveaux element dans tmp_buffer 
+        while(elem_write < nbelem) 
+        {
+            memcpy(tmp_buffer + size_loaded + (elem_write*taille), p+(elem_write*taille), taille);
+            elem_write = elem_write + 1;
+        }
+        // Enfin on ecrit tmp_buffer dans le fichier
+        write(f->fd, tmp_buffer, size_loaded + size_wanted);
+    }
+    return elem_write;
 }
