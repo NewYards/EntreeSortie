@@ -25,6 +25,7 @@ int fermer(FICHIER*f);
 ssize_t lire(void *p, unsigned int taille, unsigned int nbelem, FICHIER *f);
 ssize_t ecrire(const void *p, unsigned int taille, unsigned int nbelem, FICHIER *f);
 int vider(FICHIER *f);
+void init();
 
 int fecriref (FICHIER *f, const char *format, ...);
 /* directly in stdout */
